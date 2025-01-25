@@ -4,26 +4,62 @@ using UnityEngine;
 
 public class PlatformSpawner : MonoBehaviour
 {
-    private float platformLength;
+    private Vector3 initialPlatformScale;
+    [SerializeField]private int parkourLength;
+    private int spawnedPlatformCount = 0;
+    private List<MovingPlatform> spawnedPlatforms = new List<MovingPlatform>();
     private float nextSpawn;
     void Start()
     {
-        Managers.EventManager.Instance.OnSendPlatformScaleInfo += SetPlatformLength;
-        Managers.EventManager.Instance.OnPlatformStopMoving += SpawnPlatform;
-        
+
+        Managers.EventManager.Instance.OnSendPlatformScaleInfo += SetPlatformScale;
+        Managers.EventManager.Instance.OnCallNextPlatform += SpawnPlatform;
+        Managers.EventManager.Instance.OnLevelStart += StartLevel;
+        Managers.EventManager.Instance.OnAddPlatformToSpawnedList += AddPlatformToList;
     }
 
-    void SpawnPlatform()
+    void StartLevel()
     {
-        var sideChoice = Random.Range(0, 2);
-        Managers.EventManager.Instance.ONOnSpawnAnotherPlatform(sideChoice, nextSpawn);
-        nextSpawn += platformLength;
+        nextSpawn += initialPlatformScale.z;
+        SpawnPlatform(initialPlatformScale.x);
     }
 
-    private void SetPlatformLength(float length)
+    void SpawnPlatform(float platformScale)
     {
-        platformLength = length;
-        SpawnPlatform();
+        if(spawnedPlatformCount >= parkourLength - 1)
+        {
+            Managers.EventManager.Instance.ONOnSetPlayerPath(spawnedPlatforms);
+            //win condition
+            return;
+        } 
+        Managers.EventManager.Instance.ONOnSpawnMovingPlatform(platformScale, nextSpawn, spawnedPlatformCount);
+        nextSpawn += initialPlatformScale.z;
+        spawnedPlatformCount++;
+    }
+
+    private void SetPlatformScale(Vector3 scale)
+    {
+        initialPlatformScale = scale;
+        SpawnStaticPlatforms();
+    }
+
+    private void SpawnStaticPlatforms()
+    {
+        if(parkourLength == 0)
+        {
+            parkourLength = 10;
+        }
+        Managers.EventManager.Instance.ONOnSpawnStaticPlatforms(parkourLength);
+    }
+
+    private void AddPlatformToList(MovingPlatform platform)
+    {
+        if(spawnedPlatforms.Count == 0)
+        {
+            spawnedPlatforms.Add(platform);
+            return;
+        }
+        spawnedPlatforms.Insert(spawnedPlatforms.Count-1,platform);
     }
     
 }

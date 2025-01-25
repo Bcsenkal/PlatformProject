@@ -6,42 +6,76 @@ using Managers;
 
 public class MovingPlatform : MonoBehaviour
 {
-    [SerializeField] private float moveTime = 1f;
+    
 
-    private float targetX;
+    
     public Vector3 InitialScale { get; set; }
     private bool isMoving;
-    private Tween moveTween;
     private MovingPlatform previousPlatform;
 
-    private void Move()
+    //Smooth Movement
+    private float elapsedTime;
+    [SerializeField] private float moveTime;
+    private const float minMoveTime = 0.4f;
+    private float targetX;
+    private float startX;
+
+    private void Update()
     {
-        targetX = transform.position.x < 0 ? 2f : -2f;
-        moveTween = transform.DOMoveX(targetX, moveTime).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo);
+        if(!isMoving) return;
+        elapsedTime += Time.deltaTime;
+        float newX = Easings.QuadEaseInOut(elapsedTime, startX, targetX - startX, moveTime);
+        transform.position = new Vector3(newX, transform.position.y, transform.position.z);
+        if(elapsedTime >= moveTime)
+        {
+            elapsedTime = 0;
+            startX = targetX;
+            targetX = 0 -targetX;
+        }
     }
 
-    public void StartMoving(MovingPlatform previous, bool isStartingPlatform)
+    public void StartMoving(MovingPlatform previous, float platformScale, int spawnedPlatforms)
     {
-        
+        moveTime -= spawnedPlatforms * 0.05f;
+        moveTime = Mathf.Clamp(moveTime, minMoveTime, moveTime);
         previousPlatform = previous;
-        isMoving = true;
         EventManager.Instance.ONOnChangeNextSpawn(transform.position.z + InitialScale.z);
         Managers.EventManager.Instance.OnMouseDown += StopMoving;
-        Debug.Log(isStartingPlatform);
-        if(isStartingPlatform)
-        {
-            transform.position = new Vector3(0, 0, 0);
-            isMoving = false;
-            return;
-        }
-        Move();
+        startX = transform.position.x;
+        targetX = transform.position.x < 0 ? platformScale : -platformScale;
+        isMoving = true;
     }
 
-    public void StopMoving(Vector2 args)
+    private void StopMoving(Vector2 args)
     {
+        if(!isMoving) return;
         isMoving = false;
-        moveTween.Kill();
-        Managers.EventManager.Instance.ONOnPlatformStopMoving();
         Managers.EventManager.Instance.OnMouseDown -= StopMoving;
+        if(previousPlatform == null)
+        {
+            Managers.EventManager.Instance.ONOnCallNextPlatform(transform.localScale.x);
+            return;
+        }
+        var distance = transform.position.x - previousPlatform.transform.position.x;
+        SplitPlatform(distance);
+    }
+
+    private void SplitPlatform(float distance)
+    {
+        var isPerfect = Mathf.Abs(distance) <= 0.15f;
+        float newScaleX = isPerfect ? previousPlatform.transform.localScale.x : previousPlatform.transform.localScale.x - Mathf.Abs(distance);
+        newScaleX = Mathf.Clamp(newScaleX, 0, previousPlatform.transform.localScale.x);
+        if(newScaleX == 0)
+        {
+            transform.localScale = Vector3.zero;
+            //TODO game end
+            return;
+        } 
+        float newXPosition = isPerfect ? previousPlatform.transform.position.x : previousPlatform.transform.position.x + distance / 2;
+        transform.localScale = new Vector3(newScaleX, transform.localScale.y, transform.localScale.z);
+        transform.position = new Vector3(newXPosition, transform.position.y, transform.position.z);
+        EventManager.Instance.ONOnCallNextPlatform(transform.localScale.x);
+        EventManager.Instance.ONOnPerfectPlacement(isPerfect);
+        EventManager.Instance.ONOnAddPlatformToSpawnedList(this);
     }
 }

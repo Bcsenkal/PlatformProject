@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Managers
 {
@@ -8,15 +9,15 @@ namespace Managers
         
 #region Level Status
 
-        public event System.Action<bool> ONLevelEnd;
-        public event System.Action ONLevelStart;
+        public event System.Action<bool> OnLevelEnd;
+        public event System.Action OnLevelStart;
         
-        public void OnONLevelStart(){
-            ONLevelStart?.Invoke();
+        public void ONOnLevelStart(){
+            OnLevelStart?.Invoke();
         }
-        public void OnONLevelEnd(bool isSuccess)
+        public void ONOnLevelEnd(bool isSuccess)
         {
-            ONLevelEnd?.Invoke(isSuccess);
+            OnLevelEnd?.Invoke(isSuccess);
         }
 
 #endregion
@@ -32,21 +33,47 @@ namespace Managers
 
 #endregion
 
-#region Platforms
+#region Player
 
-        public event System.Action<int,float> OnSpawnAnotherPlatform;
-        public event System.Action OnPlatformStopMoving;
-        public event System.Action<float> OnChangeNextSpawn;
-        public event System.Action<float> OnSendPlatformScaleInfo;
+        public event System.Action OnPlayerStartMoving;
+        public event System.Action<List<MovingPlatform>> OnSetPlayerPath;
 
-        public void ONOnSpawnAnotherPlatform(int sideChoice, float position)
+        public void ONOnSetPlayerPath(List<MovingPlatform> platforms)
         {
-            OnSpawnAnotherPlatform?.Invoke(sideChoice, position);
+            OnSetPlayerPath?.Invoke(platforms);
+        }
+        
+        public void ONOnPlayerStartMoving()
+        {
+            OnPlayerStartMoving?.Invoke();
         }
 
-        public void ONOnPlatformStopMoving()
+
+#endregion
+
+#region Platforms
+
+        public event System.Action<float,float,int> OnSpawnMovingPlatform;
+        public event System.Action<int> OnSpawnStaticPlatforms;
+        public event System.Action<float> OnCallNextPlatform;
+        public event System.Action<float> OnChangeNextSpawn;
+        public event System.Action<Vector3> OnSendPlatformScaleInfo;
+        public event System.Action<bool> OnPerfectPlacement;
+        public event System.Action<MovingPlatform> OnAddPlatformToSpawnedList;
+
+        public void ONOnSpawnMovingPlatform(float scaleX, float position,int spawnedPlatforms)
         {
-            OnPlatformStopMoving?.Invoke();
+            OnSpawnMovingPlatform?.Invoke(scaleX, position, spawnedPlatforms);
+        }
+
+        public void ONOnSpawnStaticPlatforms(int parkourLength)
+        {
+            OnSpawnStaticPlatforms?.Invoke(parkourLength);
+        }
+
+        public void ONOnCallNextPlatform(float platformScale)
+        {
+            OnCallNextPlatform?.Invoke(platformScale);
         }
 
         public void ONOnChangeNextSpawn(float nextSpawn)
@@ -54,10 +81,22 @@ namespace Managers
             OnChangeNextSpawn?.Invoke(nextSpawn);
         }
 
-        public void ONOnSendPlatformScaleInfo(float platformScale)
+        public void ONOnSendPlatformScaleInfo(Vector3 platformScale)
         {
             OnSendPlatformScaleInfo?.Invoke(platformScale);
         }
+
+        public void ONOnPerfectPlacement(bool isPerfect)
+        {
+            OnPerfectPlacement?.Invoke(isPerfect);
+        }
+
+        public void ONOnAddPlatformToSpawnedList(MovingPlatform platform)
+        {
+            OnAddPlatformToSpawnedList?.Invoke(platform);
+        }
+
+
 #endregion
 
 
@@ -65,9 +104,14 @@ namespace Managers
         //remove listeners from all of the events here
         public void NextLevelReset()
         {
-            ONLevelStart= null;
-            ONLevelEnd = null;
+            OnLevelStart= null;
+            OnLevelEnd = null;
             OnMouseDown = null;
+            OnSpawnMovingPlatform = null;
+            OnCallNextPlatform = null;
+            OnChangeNextSpawn = null;
+            OnSendPlatformScaleInfo = null;
+            OnPerfectPlacement = null;
         }
 
 
