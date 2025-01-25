@@ -6,9 +6,7 @@ using Managers;
 
 public class MovingPlatform : MonoBehaviour
 {
-    
-
-    
+    private PlatformColorization platformColorization;
     public Vector3 InitialScale { get; set; }
     private bool isMoving;
     private MovingPlatform previousPlatform;
@@ -19,6 +17,12 @@ public class MovingPlatform : MonoBehaviour
     private const float minMoveTime = 0.4f;
     private float targetX;
     private float startX;
+
+    public void CacheComponents()
+    {
+        platformColorization = GetComponent<PlatformColorization>();
+        platformColorization.CacheComponents();
+    }
 
     private void Update()
     {
@@ -68,7 +72,7 @@ public class MovingPlatform : MonoBehaviour
         if(newScaleX == 0)
         {
             transform.localScale = Vector3.zero;
-            //TODO game end
+            Managers.EventManager.Instance.ONOnFailedPlacement();
             return;
         } 
         float newXPosition = isPerfect ? previousPlatform.transform.position.x : previousPlatform.transform.position.x + distance / 2;
@@ -77,5 +81,10 @@ public class MovingPlatform : MonoBehaviour
         EventManager.Instance.ONOnCallNextPlatform(transform.localScale.x);
         EventManager.Instance.ONOnPerfectPlacement(isPerfect);
         EventManager.Instance.ONOnAddPlatformToSpawnedList(this);
+    }
+
+    public void RandomizeColor()
+    {
+        platformColorization.RandomizeColor();
     }
 }

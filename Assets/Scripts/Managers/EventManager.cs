@@ -36,11 +36,11 @@ namespace Managers
 #region Player
 
         public event System.Action OnPlayerStartMoving;
-        public event System.Action<List<MovingPlatform>> OnSetPlayerPath;
+        public event System.Action<List<MovingPlatform>,bool> OnSetPlayerPath;
 
-        public void ONOnSetPlayerPath(List<MovingPlatform> platforms)
+        public void ONOnSetPlayerPath(List<MovingPlatform> platforms,bool isWinCondition)
         {
-            OnSetPlayerPath?.Invoke(platforms);
+            OnSetPlayerPath?.Invoke(platforms,isWinCondition);
         }
         
         public void ONOnPlayerStartMoving()
@@ -51,6 +51,27 @@ namespace Managers
 
 #endregion
 
+#region Camera
+
+        public event System.Action OnSwitchToOrbitalCamera;
+        public event System.Action OnSwitchToFollowCamera;
+        public event System.Action OnSwitchToFreeCamera;
+        
+        public void ONOnSwitchToOrbitalCamera()
+        {
+            OnSwitchToOrbitalCamera?.Invoke();
+        }
+        public void ONOnSwitchToFollowCamera()
+        {
+            OnSwitchToFollowCamera?.Invoke();
+        }
+        public void ONOnSwitchToFreeCamera()
+        {
+            OnSwitchToFreeCamera?.Invoke();
+        }
+        
+#endregion
+
 #region Platforms
 
         public event System.Action<float,float,int> OnSpawnMovingPlatform;
@@ -59,6 +80,7 @@ namespace Managers
         public event System.Action<float> OnChangeNextSpawn;
         public event System.Action<Vector3> OnSendPlatformScaleInfo;
         public event System.Action<bool> OnPerfectPlacement;
+        public event System.Action OnFailedPlacement;
         public event System.Action<MovingPlatform> OnAddPlatformToSpawnedList;
 
         public void ONOnSpawnMovingPlatform(float scaleX, float position,int spawnedPlatforms)
@@ -89,6 +111,11 @@ namespace Managers
         public void ONOnPerfectPlacement(bool isPerfect)
         {
             OnPerfectPlacement?.Invoke(isPerfect);
+        }
+
+        public void ONOnFailedPlacement()
+        {
+            OnFailedPlacement?.Invoke();
         }
 
         public void ONOnAddPlatformToSpawnedList(MovingPlatform platform)

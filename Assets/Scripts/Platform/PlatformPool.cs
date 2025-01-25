@@ -29,6 +29,7 @@ public class PlatformPool : MonoBehaviour
         {
             MovingPlatform platform = Instantiate(platformPrefab, transform);
             platform.InitialScale = platformScale;
+            platform.CacheComponents();
             platform.gameObject.SetActive(false);
             platforms.Add(platform);
         }
@@ -52,6 +53,7 @@ public class PlatformPool : MonoBehaviour
         var side = Random.Range(0, 2);
         platform.transform.position = new Vector3(side == 0 ? platformScale.x : -platformScale.x, 0, position);
         platform.transform.localScale = new Vector3(scaleX, platformScale.y, platformScale.z);
+        platform.RandomizeColor();
         platform.gameObject.SetActive(true);
         platform.StartMoving(previousPlatform, platformScale.x,spawnedPlatforms);
         previousPlatform = platform;

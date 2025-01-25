@@ -16,6 +16,7 @@ public class PlatformSpawner : MonoBehaviour
         Managers.EventManager.Instance.OnCallNextPlatform += SpawnPlatform;
         Managers.EventManager.Instance.OnLevelStart += StartLevel;
         Managers.EventManager.Instance.OnAddPlatformToSpawnedList += AddPlatformToList;
+        Managers.EventManager.Instance.OnFailedPlacement += SendPlatformsToPlayer;
     }
 
     void StartLevel()
@@ -28,7 +29,7 @@ public class PlatformSpawner : MonoBehaviour
     {
         if(spawnedPlatformCount >= parkourLength - 1)
         {
-            Managers.EventManager.Instance.ONOnSetPlayerPath(spawnedPlatforms);
+            Managers.EventManager.Instance.ONOnSetPlayerPath(spawnedPlatforms, true);
             //win condition
             return;
         } 
@@ -60,6 +61,11 @@ public class PlatformSpawner : MonoBehaviour
             return;
         }
         spawnedPlatforms.Insert(spawnedPlatforms.Count-1,platform);
+    }
+
+    private void SendPlatformsToPlayer()
+    {
+        Managers.EventManager.Instance.ONOnSetPlayerPath(spawnedPlatforms, false);
     }
     
 }
