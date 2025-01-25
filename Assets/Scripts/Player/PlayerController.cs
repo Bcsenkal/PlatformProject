@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
         Managers.EventManager.Instance.OnLevelRestart += OnLevelRestart;
     }
 
-    private void SetPath(List<MovingPlatform> platforms,bool isWinCondition)
+    private void SetPath(List<Platform> platforms,bool isWinCondition)
     {
         playerMovement.StartMoving(platforms,isWinCondition);
         playerAnimation.Move(true);

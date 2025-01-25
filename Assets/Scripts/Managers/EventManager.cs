@@ -42,9 +42,9 @@ namespace Managers
 #region Player
 
         public event System.Action OnPlayerStartMoving;
-        public event System.Action<List<MovingPlatform>,bool> OnSetPlayerPath;
+        public event System.Action<List<Platform>,bool> OnSetPlayerPath;
 
-        public void ONOnSetPlayerPath(List<MovingPlatform> platforms,bool isWinCondition)
+        public void ONOnSetPlayerPath(List<Platform> platforms,bool isWinCondition)
         {
             OnSetPlayerPath?.Invoke(platforms,isWinCondition);
         }
@@ -87,7 +87,7 @@ namespace Managers
         public event System.Action<Vector3> OnSendPlatformScaleInfo;
         public event System.Action<bool> OnPerfectPlacement;
         public event System.Action OnFailedPlacement;
-        public event System.Action<MovingPlatform> OnAddPlatformToSpawnedList;
+        public event System.Action<Platform> OnAddPlatformToSpawnedList;
 
         public void ONOnSpawnMovingPlatform(float scaleX, float position,int spawnedPlatforms)
         {
@@ -124,7 +124,7 @@ namespace Managers
             OnFailedPlacement?.Invoke();
         }
 
-        public void ONOnAddPlatformToSpawnedList(MovingPlatform platform)
+        public void ONOnAddPlatformToSpawnedList(Platform platform)
         {
             OnAddPlatformToSpawnedList?.Invoke(platform);
         }

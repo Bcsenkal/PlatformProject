@@ -5,11 +5,12 @@ using Managers;
 
 public class PlatformPool : MonoBehaviour
 {
-    [SerializeField]private Vector3 platformScale;
-    [SerializeField]private MovingPlatform platformPrefab;
+    private Vector3 platformScale;
+    [SerializeField]private Platform platformPrefab;
     [SerializeField]private int poolSize;
-    private List<MovingPlatform> platforms = new List<MovingPlatform>();
-    private MovingPlatform previousPlatform;
+    private List<Platform> platforms = new List<Platform>();
+    private Platform previousPlatform;
+    private Platform currentEndPlatform;
     private bool isFirstParkour;
     void Awake()
     {
@@ -30,7 +31,7 @@ public class PlatformPool : MonoBehaviour
     {
         for (int i = 0; i < poolSize; i++)
         {
-            MovingPlatform platform = Instantiate(platformPrefab, transform);
+            Platform platform = Instantiate(platformPrefab, transform);
             platform.InitialScale = platformScale;
             platform.CacheComponents();
             platform.gameObject.SetActive(false);
@@ -38,13 +39,15 @@ public class PlatformPool : MonoBehaviour
         }
     }
 
-    private MovingPlatform FindAvailablePlatform()
+    private Platform FindAvailablePlatform()
     {
         var platform = platforms.Find(p => !p.gameObject.activeInHierarchy);
         if(platform == null)
         {
             platform = Instantiate(platformPrefab, transform);
             platform.InitialScale = platformScale;
+            platform.CacheComponents();
+            platform.gameObject.SetActive(false);
             platforms.Add(platform);
         }
         return platform;
@@ -93,21 +96,25 @@ public class PlatformPool : MonoBehaviour
         platform.transform.position = new Vector3(0, 0, endPoint);
         platform.transform.localScale = platformScale;
         platform.gameObject.SetActive(true);
-        Managers.EventManager.Instance.ONOnAddPlatformToSpawnedList(platform);
+        EventManager.Instance.ONOnAddPlatformToSpawnedList(platform);
+        currentEndPlatform = platform;
     }
 
     private void OnLevelRestart(bool isSuccess)
     {
+        
         var removingOffset = isSuccess ? previousPlatform.transform.position.z - platformScale.z * 3f : 500f;
         for(int i = 0; i < platforms.Count; i++)
         {
             if(platforms[i].transform.position.z > removingOffset) continue;
+            if(!platforms[i].gameObject.activeInHierarchy) continue;
             platforms[i].gameObject.SetActive(false);
             platforms[i].transform.position = Vector3.zero;
             platforms[i].transform.localScale = platformScale;
         }
-        
         isFirstParkour = !isSuccess;
+        if(!isSuccess) return;
+        previousPlatform = currentEndPlatform;
     }
     
 

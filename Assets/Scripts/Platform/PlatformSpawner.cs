@@ -7,7 +7,7 @@ public class PlatformSpawner : MonoBehaviour
     private Vector3 initialPlatformScale;
     [SerializeField]private int parkourLength;
     private int spawnedPlatformCount = 0;
-    private List<MovingPlatform> spawnedPlatforms = new List<MovingPlatform>();
+    private List<Platform> spawnedPlatforms = new List<Platform>();
     private float nextSpawn;
     private float startPoint = 0f;
     void Start()
@@ -53,7 +53,7 @@ public class PlatformSpawner : MonoBehaviour
         Managers.EventManager.Instance.ONOnSpawnStaticPlatforms(startPoint,parkourLength);
     }
 
-    private void AddPlatformToList(MovingPlatform platform)
+    private void AddPlatformToList(Platform platform)
     {
         if(spawnedPlatforms.Count == 0)
         {

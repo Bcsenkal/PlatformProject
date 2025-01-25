@@ -863,7 +863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caa400288f55514489dfed4290eaf190, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parkourLength: 2
+  parkourLength: 4
 --- !u!4 &1298869477
 Transform:
   m_ObjectHideFlags: 0
@@ -1318,9 +1318,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6609f4c4c081f6b479a4e1487a65271c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformScale: {x: 0, y: 0, z: 0}
   platformPrefab: {fileID: 1355261500665163935, guid: e63b5abb9904ce948b40d5565b6ef862, type: 3}
-  poolSize: 50
+  poolSize: 20
 --- !u!1 &2040794994
 GameObject:
   m_ObjectHideFlags: 0

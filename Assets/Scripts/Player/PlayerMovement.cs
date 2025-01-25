@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion targetRotation;
     private Vector3 targetPosition;
 
-    private List<MovingPlatform> path = new List<MovingPlatform>();
+    private List<Platform> path = new List<Platform>();
     private int pathIndex;
     private bool isMoving;
     private bool isGonnaWin;
@@ -53,10 +53,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void StartMoving(List<MovingPlatform> platforms, bool isWinCondition)
+    public void StartMoving(List<Platform> platforms, bool isWinCondition)
     {
         isGonnaWin = isWinCondition;
-        path = new List<MovingPlatform>(platforms);
+        path = new List<Platform>(platforms);
         if(!isGonnaWin)
         {
             path.RemoveAt(path.Count - 1);
