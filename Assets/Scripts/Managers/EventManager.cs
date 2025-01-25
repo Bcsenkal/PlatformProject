@@ -32,58 +32,31 @@ namespace Managers
 
 #endregion
 
-#region Cross Flow
+#region Platforms
 
-        public event System.Action<Cell> OnCreateCrossOnCell;
-        public event System.Action<Cell> OnCheckForMatch;
-        public event System.Action<Cross> OnDisableCross;
-        public event System.Action<int> OnCreateCrossMatrix;
-        public event System.Action<int, int> OnCrossMatched;
+        public event System.Action<int,float> OnSpawnAnotherPlatform;
+        public event System.Action OnPlatformStopMoving;
+        public event System.Action<float> OnChangeNextSpawn;
+        public event System.Action<float> OnSendPlatformScaleInfo;
 
-        public void ONOnCreateCrossOnCell(Cell cell)
+        public void ONOnSpawnAnotherPlatform(int sideChoice, float position)
         {
-            OnCreateCrossOnCell?.Invoke(cell);
+            OnSpawnAnotherPlatform?.Invoke(sideChoice, position);
         }
 
-        public void ONOnCheckForMatch(Cell cell)
+        public void ONOnPlatformStopMoving()
         {
-            OnCheckForMatch?.Invoke(cell);
+            OnPlatformStopMoving?.Invoke();
         }
 
-        public void ONOnDisableCross(Cross cross)
+        public void ONOnChangeNextSpawn(float nextSpawn)
         {
-            OnDisableCross?.Invoke(cross);
+            OnChangeNextSpawn?.Invoke(nextSpawn);
         }
 
-        public void ONOnCreateCrossMatrix(int size)
+        public void ONOnSendPlatformScaleInfo(float platformScale)
         {
-            OnCreateCrossMatrix?.Invoke(size);
-        }
-
-        public void ONOnCrossMatched(int x, int y)
-        {
-            OnCrossMatched?.Invoke(x, y);
-        }
-
-#endregion
-
-#region UI
-        public event System.Action OnSettingsButtonClick;
-        public event System.Action OnSettingsClosed;
-        public event System.Action<int> OnRebuildButtonClick;
-
-        public void ONOnSettingsButtonClick()
-        {
-            OnSettingsButtonClick?.Invoke();
-        }
-        public void ONOnSettingsClosed()
-        {
-            OnSettingsClosed?.Invoke();
-        }
-
-        public void ONOnRebuildButtonClick(int size)
-        {
-            OnRebuildButtonClick?.Invoke(size);
+            OnSendPlatformScaleInfo?.Invoke(platformScale);
         }
 #endregion
 
@@ -95,14 +68,6 @@ namespace Managers
             ONLevelStart= null;
             ONLevelEnd = null;
             OnMouseDown = null;
-            OnCreateCrossOnCell = null;
-            OnCheckForMatch = null;
-            OnDisableCross = null;
-            OnCreateCrossMatrix = null;
-            OnCrossMatched = null;
-            OnSettingsButtonClick = null;
-            OnSettingsClosed = null;
-            OnRebuildButtonClick = null;
         }
 
 
