@@ -9,14 +9,15 @@ public class PlatformSpawner : MonoBehaviour
     private int spawnedPlatformCount = 0;
     private List<MovingPlatform> spawnedPlatforms = new List<MovingPlatform>();
     private float nextSpawn;
+    private float startPoint = 0f;
     void Start()
     {
-
-        Managers.EventManager.Instance.OnSendPlatformScaleInfo += SetPlatformScale;
         Managers.EventManager.Instance.OnCallNextPlatform += SpawnPlatform;
         Managers.EventManager.Instance.OnLevelStart += StartLevel;
+        Managers.EventManager.Instance.OnSendPlatformScaleInfo += SetPlatformScale;
         Managers.EventManager.Instance.OnAddPlatformToSpawnedList += AddPlatformToList;
         Managers.EventManager.Instance.OnFailedPlacement += SendPlatformsToPlayer;
+        Managers.EventManager.Instance.OnLevelRestart += RestartLevel;
     }
 
     void StartLevel()
@@ -30,7 +31,6 @@ public class PlatformSpawner : MonoBehaviour
         if(spawnedPlatformCount >= parkourLength - 1)
         {
             Managers.EventManager.Instance.ONOnSetPlayerPath(spawnedPlatforms, true);
-            //win condition
             return;
         } 
         Managers.EventManager.Instance.ONOnSpawnMovingPlatform(platformScale, nextSpawn, spawnedPlatformCount);
@@ -39,7 +39,7 @@ public class PlatformSpawner : MonoBehaviour
     }
 
     private void SetPlatformScale(Vector3 scale)
-    {
+    { 
         initialPlatformScale = scale;
         SpawnStaticPlatforms();
     }
@@ -50,7 +50,7 @@ public class PlatformSpawner : MonoBehaviour
         {
             parkourLength = 10;
         }
-        Managers.EventManager.Instance.ONOnSpawnStaticPlatforms(parkourLength);
+        Managers.EventManager.Instance.ONOnSpawnStaticPlatforms(startPoint,parkourLength);
     }
 
     private void AddPlatformToList(MovingPlatform platform)
@@ -66,6 +66,15 @@ public class PlatformSpawner : MonoBehaviour
     private void SendPlatformsToPlayer()
     {
         Managers.EventManager.Instance.ONOnSetPlayerPath(spawnedPlatforms, false);
+    }
+
+    private void RestartLevel(bool isSuccess)
+    {
+        startPoint = spawnedPlatforms[spawnedPlatforms.Count - 1].transform.position.z;
+        spawnedPlatforms.Clear();
+        nextSpawn = startPoint;
+        spawnedPlatformCount = 0;
+        Invoke(nameof(SpawnStaticPlatforms),0.05f);
     }
     
 }

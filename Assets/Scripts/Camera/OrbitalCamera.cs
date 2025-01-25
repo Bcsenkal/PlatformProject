@@ -10,7 +10,8 @@ public class OrbitalCamera : MonoBehaviour
     [SerializeField]private float rotateSpeed;
     private void Start()
     {
-        cinemachineOrbitalTransposer = GetComponent<CinemachineOrbitalTransposer>();
+        cinemachineOrbitalTransposer = GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineOrbitalTransposer>();
+        Managers.EventManager.Instance.OnLevelRestart += OnLevelRestart;
     }
     public void Enable()
     {
@@ -22,6 +23,11 @@ public class OrbitalCamera : MonoBehaviour
     {
         if (!isRotating) return;
         isRotating = false;
+    }
+
+    private void OnLevelRestart(bool args)
+    {
+        Disable();
     }
     // Update is called once per frame
     void Update()

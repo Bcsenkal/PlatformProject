@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour
     private void Start()
     {
         EventManager.Instance.OnMouseDown += StartLevel;
+        EventManager.Instance.OnLevelRestart += OnLevelRestart;
     }
 
     private void StartLevel(Vector2 position)
@@ -18,5 +19,10 @@ public class InputHandler : MonoBehaviour
             isStarted = true;
             EventManager.Instance.ONOnLevelStart();
         }
+    }
+
+    private void OnLevelRestart(bool isSuccess)
+    {
+        isStarted = false;
     }
 }

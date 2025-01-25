@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     {
         Managers.EventManager.Instance.OnSetPlayerPath += SetPath;
         Managers.EventManager.Instance.OnLevelEnd += OnLevelEnd;
+        Managers.EventManager.Instance.OnLevelRestart += OnLevelRestart;
     }
 
     private void SetPath(List<MovingPlatform> platforms,bool isWinCondition)
@@ -49,5 +50,13 @@ public class PlayerController : MonoBehaviour
     public void DisablePhysics()
     {
         playerPhysics.DisablePhysics();
+    }
+
+    private void OnLevelRestart(bool isSuccess)
+    {
+        playerPhysics.DisablePhysics();
+        playerAnimation.Dance(false);
+        playerAnimation.Move(false);
+        playerMovement.ResetPlayer(isSuccess);
     }
 }

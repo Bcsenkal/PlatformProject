@@ -11,6 +11,7 @@ namespace Managers
 
         public event System.Action<bool> OnLevelEnd;
         public event System.Action OnLevelStart;
+        public event System.Action<bool> OnLevelRestart;
         
         public void ONOnLevelStart(){
             OnLevelStart?.Invoke();
@@ -18,6 +19,11 @@ namespace Managers
         public void ONOnLevelEnd(bool isSuccess)
         {
             OnLevelEnd?.Invoke(isSuccess);
+        }
+
+        public void ONOnLevelRestart(bool isSuccess)
+        {
+            OnLevelRestart?.Invoke(isSuccess);
         }
 
 #endregion
@@ -69,13 +75,13 @@ namespace Managers
         {
             OnSwitchToFreeCamera?.Invoke();
         }
-        
+
 #endregion
 
 #region Platforms
 
         public event System.Action<float,float,int> OnSpawnMovingPlatform;
-        public event System.Action<int> OnSpawnStaticPlatforms;
+        public event System.Action<float,int> OnSpawnStaticPlatforms;
         public event System.Action<float> OnCallNextPlatform;
         public event System.Action<float> OnChangeNextSpawn;
         public event System.Action<Vector3> OnSendPlatformScaleInfo;
@@ -88,9 +94,9 @@ namespace Managers
             OnSpawnMovingPlatform?.Invoke(scaleX, position, spawnedPlatforms);
         }
 
-        public void ONOnSpawnStaticPlatforms(int parkourLength)
+        public void ONOnSpawnStaticPlatforms(float startPoint,int parkourLength) 
         {
-            OnSpawnStaticPlatforms?.Invoke(parkourLength);
+            OnSpawnStaticPlatforms?.Invoke(startPoint,parkourLength);
         }
 
         public void ONOnCallNextPlatform(float platformScale)

@@ -15,7 +15,8 @@ public class CameraController : MonoBehaviour
         orbitalCamera = transform.GetChild(0).GetComponent<CinemachineVirtualCamera>();
         followCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
         freeCamera = transform.GetChild(2).GetComponent<CinemachineVirtualCamera>();
-        orbitalCameraControl = GetComponent<OrbitalCamera>();
+        orbitalCameraControl = orbitalCamera.GetComponent<OrbitalCamera>();
+        Managers.EventManager.Instance.OnLevelRestart += OnLevelRestart;
     }
 
     void Start()
@@ -45,6 +46,11 @@ public class CameraController : MonoBehaviour
         freeCamera.transform.position = followCamera.transform.position;
         freeCamera.transform.rotation = followCamera.transform.rotation;
         freeCamera.Priority = 10;
+    }
+
+    private void OnLevelRestart(bool isSuccess)
+    {
+        SwitchToFollowCamera();
     }
 
     // Update is called once per frame
