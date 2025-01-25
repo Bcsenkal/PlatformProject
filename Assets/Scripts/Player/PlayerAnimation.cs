@@ -17,4 +17,9 @@ public class PlayerAnimation : MonoBehaviour
     {
         anim.SetBool(runHash, isMoving);
     }
+
+    public void Dance(bool isDancing)
+    {
+        anim.SetBool(danceHash, isDancing);
+    }
 }
