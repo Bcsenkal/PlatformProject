@@ -42,7 +42,6 @@ public class PlatformSpawner : MonoBehaviour
     //sets the initial platform scale to use different sized platforms
     private void SetPlatformScale(Vector3 scale)
     {
-        Debug.Log("Setting platform scale");
         initialPlatformScale = scale;
         SpawnStaticPlatforms();
     }
