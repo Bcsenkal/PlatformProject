@@ -24,7 +24,7 @@ public class PlatformPool : MonoBehaviour
         EventManager.Instance.OnSpawnMovingPlatform += SpawnPlatform;
         EventManager.Instance.OnSpawnStaticPlatforms += SpawnStaticPlatforms;
         EventManager.Instance.OnLevelRestart += OnLevelRestart;
-        Invoke(nameof(SendPlatformScaleInfo), 0.05f);
+        Invoke(nameof(SendPlatformScaleInfo), 0.1f);
     }
 
     private void CreatePool()
@@ -53,9 +53,8 @@ public class PlatformPool : MonoBehaviour
         return platform;
     }
 
-    private void SendPlatformScaleInfo()
-    { 
-        Debug.Log("Sending Platform Scale Info");
+    private void SendPlatformScaleInfo() 
+    {
         EventManager.Instance.ONOnSendPlatformScaleInfo(platformScale);
     }
 
@@ -102,7 +101,6 @@ public class PlatformPool : MonoBehaviour
 
     private void OnLevelRestart(bool isSuccess)
     {
-        
         var removingOffset = isSuccess ? previousPlatform.transform.position.z - platformScale.z * 3f : 500f;
         for(int i = 0; i < platforms.Count; i++)
         {

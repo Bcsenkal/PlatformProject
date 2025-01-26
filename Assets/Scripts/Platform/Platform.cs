@@ -32,9 +32,11 @@ public class Platform : MonoBehaviour
 
     public void SplitPlatform(float distance)
     {
+        var direction = distance < 0 ? -1 : 1;
         var isPerfect = Mathf.Abs(distance) <= 0.15f;
         float newScaleX = isPerfect ? previousPlatform.transform.localScale.x : previousPlatform.transform.localScale.x - Mathf.Abs(distance);
         newScaleX = Mathf.Clamp(newScaleX, 0, previousPlatform.transform.localScale.x);
+        
         if(newScaleX == 0)
         {
             transform.localScale = Vector3.zero;
@@ -42,15 +44,26 @@ public class Platform : MonoBehaviour
             return;
         } 
         float newXPosition = isPerfect ? previousPlatform.transform.position.x : previousPlatform.transform.position.x + distance / 2;
+        float fallingPartSize = transform.localScale.x - newScaleX;
+        float platformEdge = transform.position.x + newScaleX / 2 * direction;
+        float fallingPartXPosition = platformEdge + fallingPartSize / 2 * direction;
         transform.localScale = new Vector3(newScaleX, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newXPosition, transform.position.y, transform.position.z);
-        platformHighlight.Highlight(isPerfect);
-        EventManager.Instance.ONOnCallNextPlatform(transform.localScale.x);
-        EventManager.Instance.ONOnPerfectPlacement(isPerfect);
+        platformHighlight.Highlight(isPerfect); 
+        EventManager.Instance.ONOnPlatformPlacement(isPerfect);
         EventManager.Instance.ONOnAddPlatformToSpawnedList(this);
+        EventManager.Instance.ONOnCallNextPlatform(transform.localScale.x);
         previousPlatform = null;
+        if(isPerfect) return;
+        CreateFallingPart(fallingPartXPosition, fallingPartSize);
+
     }
 
+    private void CreateFallingPart(float fallingPartXPosition, float fallingPartSize)
+    {
+        Managers.EventManager.Instance.ONOnCreateFallingPart(fallingPartXPosition, fallingPartSize,platformColorization.GetColor(),transform);
+    }
+    
     public void RandomizeColor()
     {
         platformColorization.RandomizeColor();

@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private int pathIndex;
     private bool isMoving;
     private bool isGonnaWin;
-    private float platformLength;
+    private Vector3 platformSize;
 
     [SerializeField]private float moveSpeed;
     [SerializeField]private float rotationSpeed;
@@ -24,6 +24,11 @@ public class PlayerMovement : MonoBehaviour
     private void Awake() 
     {
         playerController = GetComponent<PlayerController>();
+    }
+
+    private void Start()
+    {
+        EventManager.Instance.OnSendPlatformScaleInfo += SetOffset;
     }
     
 
@@ -61,7 +66,6 @@ public class PlayerMovement : MonoBehaviour
         {
             path.RemoveAt(path.Count - 1);
         }
-        platformLength = path[0].transform.localScale.z;
         targetPosition = new Vector3(path[pathIndex].transform.position.x, transform.position.y, path[pathIndex].transform.position.z);
         targetRotation = Quaternion.LookRotation(targetPosition - transform.position);
         isMoving = true;
@@ -82,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Fall()
     {
-        targetPosition = transform.position + Vector3.forward * platformLength;
+        targetPosition = transform.position + Vector3.forward * platformSize.z;
         targetRotation = transform.rotation;
         transform.DOMove(targetPosition, 0.5f);
         yield return new WaitForSeconds(0.5f);
@@ -97,9 +101,14 @@ public class PlayerMovement : MonoBehaviour
     public void ResetPlayer(bool isSuccess)
     {
         var target = path[^1].transform.position;
-        transform.position = new Vector3(target.x, transform.position.y, target.z);
+        transform.position = isSuccess ? new Vector3(target.x, transform.position.y, target.z) : Vector3.up * platformSize.y / 2;
         transform.rotation = Quaternion.identity;
         pathIndex = 0;
         // path.Clear();
+    }
+
+    private void SetOffset(Vector3 scale)
+    {
+        platformSize = scale;
     }
 }

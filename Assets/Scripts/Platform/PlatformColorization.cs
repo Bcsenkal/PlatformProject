@@ -15,4 +15,14 @@ public class PlatformColorization : MonoBehaviour
     {
         platformRenderer.material.color = availableColors[Random.Range(0, availableColors.Length)];
     }
+
+    public void SetColor(Color color)
+    {
+        platformRenderer.material.color = color;
+    }
+
+    public Color GetColor()
+    {
+        return platformRenderer.material.color;
+    }
 }

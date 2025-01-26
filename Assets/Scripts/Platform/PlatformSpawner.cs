@@ -17,7 +17,7 @@ public class PlatformSpawner : MonoBehaviour
         Managers.EventManager.Instance.OnSendPlatformScaleInfo += SetPlatformScale;
         Managers.EventManager.Instance.OnAddPlatformToSpawnedList += AddPlatformToList;
         Managers.EventManager.Instance.OnFailedPlacement += SendPlatformsToPlayer;
-        Managers.EventManager.Instance.OnLevelRestart += RestartLevel;
+        Managers.EventManager.Instance.OnLevelRestart += RestartLevel; 
     }
 
     void StartLevel()
@@ -39,7 +39,8 @@ public class PlatformSpawner : MonoBehaviour
     }
 
     private void SetPlatformScale(Vector3 scale)
-    { 
+    {
+        Debug.Log("Setting platform scale");
         initialPlatformScale = scale;
         SpawnStaticPlatforms();
     }
@@ -70,7 +71,7 @@ public class PlatformSpawner : MonoBehaviour
 
     private void RestartLevel(bool isSuccess)
     {
-        startPoint = spawnedPlatforms[spawnedPlatforms.Count - 1].transform.position.z;
+        startPoint = isSuccess ? spawnedPlatforms[spawnedPlatforms.Count - 1].transform.position.z : 0f;
         spawnedPlatforms.Clear();
         nextSpawn = startPoint;
         spawnedPlatformCount = 0;
