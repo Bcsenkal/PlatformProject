@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+// Singleton generic class for creating a single instance of any class
 public class Singleton<T> : MonoBehaviour where T: MonoBehaviour
 {
 

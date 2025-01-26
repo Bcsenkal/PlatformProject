@@ -13,19 +13,20 @@ public class PlatformSpawner : MonoBehaviour
     void Start()
     {
         Managers.EventManager.Instance.OnCallNextPlatform += SpawnPlatform;
-        Managers.EventManager.Instance.OnLevelStart += StartLevel;
+        Managers.EventManager.Instance.OnLevelStart += SpawnFirstPlatform;
         Managers.EventManager.Instance.OnSendPlatformScaleInfo += SetPlatformScale;
         Managers.EventManager.Instance.OnAddPlatformToSpawnedList += AddPlatformToList;
         Managers.EventManager.Instance.OnFailedPlacement += SendPlatformsToPlayer;
-        Managers.EventManager.Instance.OnLevelRestart += RestartLevel; 
+        Managers.EventManager.Instance.OnLevelRestart += ResetParkour; 
     }
 
-    void StartLevel()
+    void SpawnFirstPlatform()
     {
         nextSpawn += initialPlatformScale.z;
         SpawnPlatform(initialPlatformScale.x);
     }
 
+    //if spawned platform count is equal to parkour length, send parkour information to player to start parkour, else spawn a new platform in front of current one
     void SpawnPlatform(float platformScale)
     {
         if(spawnedPlatformCount >= parkourLength - 1)
@@ -38,6 +39,7 @@ public class PlatformSpawner : MonoBehaviour
         spawnedPlatformCount++;
     }
 
+    //sets the initial platform scale to use different sized platforms
     private void SetPlatformScale(Vector3 scale)
     {
         Debug.Log("Setting platform scale");
@@ -45,6 +47,7 @@ public class PlatformSpawner : MonoBehaviour
         SpawnStaticPlatforms();
     }
 
+    //spawn starting and ending platform
     private void SpawnStaticPlatforms()
     {
         if(parkourLength == 0)
@@ -54,6 +57,7 @@ public class PlatformSpawner : MonoBehaviour
         Managers.EventManager.Instance.ONOnSpawnStaticPlatforms(startPoint,parkourLength);
     }
 
+    //add spawned platform to list
     private void AddPlatformToList(Platform platform)
     {
         if(spawnedPlatforms.Count == 0)
@@ -64,12 +68,14 @@ public class PlatformSpawner : MonoBehaviour
         spawnedPlatforms.Insert(spawnedPlatforms.Count-1,platform);
     }
 
+    //On failed placement, send current platforms to player with false bool which indicates game is going to fail
     private void SendPlatformsToPlayer()
     {
         Managers.EventManager.Instance.ONOnSetPlayerPath(spawnedPlatforms, false);
     }
 
-    private void RestartLevel(bool isSuccess)
+    //Resets parkour
+    private void ResetParkour(bool isSuccess)
     {
         startPoint = isSuccess ? spawnedPlatforms[spawnedPlatforms.Count - 1].transform.position.z : 0f;
         spawnedPlatforms.Clear();

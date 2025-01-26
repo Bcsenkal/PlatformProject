@@ -59,22 +59,13 @@ namespace Managers
 
 #region Camera
 
-        public event System.Action OnSwitchToOrbitalCamera;
-        public event System.Action OnSwitchToFollowCamera;
-        public event System.Action OnSwitchToFreeCamera;
+        public event System.Action<CameraState> OnSwitchCameraState;
+
+        public void ONOnSwitchCameraState(CameraState state)
+        {
+            OnSwitchCameraState?.Invoke(state);
+        }
         
-        public void ONOnSwitchToOrbitalCamera()
-        {
-            OnSwitchToOrbitalCamera?.Invoke();
-        }
-        public void ONOnSwitchToFollowCamera()
-        {
-            OnSwitchToFollowCamera?.Invoke();
-        }
-        public void ONOnSwitchToFreeCamera()
-        {
-            OnSwitchToFreeCamera?.Invoke();
-        }
 
 #endregion
 
@@ -163,9 +154,7 @@ namespace Managers
             OnAddFallingPartToPool = null;
             OnPlayerStartMoving = null;
             OnSetPlayerPath = null;
-            OnSwitchToOrbitalCamera = null;
-            OnSwitchToFollowCamera = null;
-            OnSwitchToFreeCamera = null;
+            OnSwitchCameraState = null;
             
         }
 

@@ -14,6 +14,7 @@ public class TapToStart : MonoBehaviour
         Managers.EventManager.Instance.OnLevelRestart += OnLevelRestart;
         Managers.EventManager.Instance.OnMouseDown += StartLevel;
     }
+    
     private void StartLevel(Vector2 args)
     {
         if(isStarted) return;
@@ -22,6 +23,7 @@ public class TapToStart : MonoBehaviour
         EventManager.Instance.ONOnLevelStart();
         isStarted = true;
     }
+
     private void OnLevelRestart(bool isSuccess)
     {
         StartPopping(1f);

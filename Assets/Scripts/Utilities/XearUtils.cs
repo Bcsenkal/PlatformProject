@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Haven't used this but it is my utilities class, growing over time
 public static class XearUtils
 {
     private static System.Random rng = new System.Random();
@@ -28,8 +29,6 @@ public static class XearUtils
         }
         return component;
     }
-
-    
 }
 
 public static class TransformExtensions

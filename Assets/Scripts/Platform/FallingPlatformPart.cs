@@ -24,6 +24,7 @@ public class FallingPlatformPart : MonoBehaviour
         platformColorization.CacheComponents();
     }
 
+    //Activate falling part and push it towards direction
     public void Activate(Color color, int direction)
     {
         platformColorization.SetColor(color);
@@ -32,6 +33,7 @@ public class FallingPlatformPart : MonoBehaviour
         isFalling = true;
     }
 
+    //Send falling part to pool and disable it
     private void SendToPool()
     {
         isFalling = false;

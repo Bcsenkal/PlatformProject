@@ -13,6 +13,7 @@ public class ComboHandler : MonoBehaviour
 
     }
 
+    //On platform placement, play sound according to current perfect combo amount
     private void OnPlatformPlacement(bool isPerfect) 
     {
         combo = isPerfect ? combo + 1 : 0;

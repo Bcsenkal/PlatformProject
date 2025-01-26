@@ -39,7 +39,6 @@ public class EndScreen : MonoBehaviour
 
     private void ShowScreen(bool isSuccess)
     {
-        
         canvasGroup.blocksRaycasts = true;
         reloadButton.interactable = false;
         isWinScreen = isSuccess;

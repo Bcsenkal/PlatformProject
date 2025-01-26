@@ -31,12 +31,14 @@ public class FallingPartPool : MonoBehaviour
         }
     }
 
+    //Add falling part again for reuse
     private void AddPartToPool(FallingPlatformPart part)
     {
         part.gameObject.SetActive(false);
         parts.Add(part);
     }
 
+    //Find available falling part
     private FallingPlatformPart FindAvailablePart()
     {
         var part = parts.Find(p => !p.gameObject.activeInHierarchy);
@@ -50,6 +52,7 @@ public class FallingPartPool : MonoBehaviour
         return part;
     }
 
+    //Create falling part on requested position
     private void CreateFallingPart(float fallingPartXPosition, float fallingPartSize,Color color,Transform sourcePlatform)
     {
         var part = FindAvailablePart();

@@ -11,6 +11,7 @@ public class PlatformColorization : MonoBehaviour
         platformRenderer = GetComponent<Renderer>();
     }
 
+    //Wanted to use single material so I only changes color of the material
     public void RandomizeColor()
     {
         platformRenderer.material.color = availableColors[Random.Range(0, availableColors.Length)];

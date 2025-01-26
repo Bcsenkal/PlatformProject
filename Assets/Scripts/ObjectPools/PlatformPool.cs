@@ -38,7 +38,7 @@ public class PlatformPool : MonoBehaviour
             platforms.Add(platform);
         }
     }
-
+    //Find available platform
     private Platform FindAvailablePlatform()
     {
         var platform = platforms.Find(p => !p.gameObject.activeInHierarchy);
@@ -53,11 +53,13 @@ public class PlatformPool : MonoBehaviour
         return platform;
     }
 
+    //Broadcast platform scale to other scripts
     private void SendPlatformScaleInfo() 
     {
         EventManager.Instance.ONOnSendPlatformScaleInfo(platformScale);
     }
 
+    //Spawn platform at requested position
     private void SpawnPlatform(float scaleX, float position, int spawnedPlatforms)
     {
         var platform = FindAvailablePlatform();
@@ -70,6 +72,7 @@ public class PlatformPool : MonoBehaviour
         previousPlatform = platform;
     }
 
+    //Spawn starting and ending platform
     private void SpawnStaticPlatforms(float startPoint, int parkourLength)
     {
         if(isFirstParkour)
@@ -99,9 +102,19 @@ public class PlatformPool : MonoBehaviour
         currentEndPlatform = platform;
     }
 
+    //Reset parkour on level restart
     private void OnLevelRestart(bool isSuccess)
     {
         var removingOffset = isSuccess ? previousPlatform.transform.position.z - platformScale.z * 3f : 500f;
+        ResetPlatforms(removingOffset);
+        isFirstParkour = !isSuccess;
+        if(!isSuccess) return;
+        previousPlatform = currentEndPlatform;
+    }
+
+    //reset platforms and remove old platforms from scene for reuse
+    private void ResetPlatforms(float removingOffset)
+    {
         for(int i = 0; i < platforms.Count; i++)
         {
             if(platforms[i].transform.position.z > removingOffset) continue;
@@ -110,9 +123,6 @@ public class PlatformPool : MonoBehaviour
             platforms[i].transform.position = Vector3.zero;
             platforms[i].transform.localScale = platformScale;
         }
-        isFirstParkour = !isSuccess;
-        if(!isSuccess) return;
-        previousPlatform = currentEndPlatform;
     }
     
 

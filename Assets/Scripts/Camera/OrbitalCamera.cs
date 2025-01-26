@@ -29,7 +29,7 @@ public class OrbitalCamera : MonoBehaviour
     {
         Disable();
     }
-    // Update is called once per frame
+    // On successful level end, orbital camera will rotate around player by rotateSpeed
     void Update()
     {
         if(isRotating)

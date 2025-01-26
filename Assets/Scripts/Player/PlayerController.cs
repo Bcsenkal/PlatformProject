@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     {
         Managers.EventManager.Instance.OnSetPlayerPath += SetPath;
         Managers.EventManager.Instance.OnLevelEnd += OnLevelEnd;
-        Managers.EventManager.Instance.OnLevelRestart += OnLevelRestart;
+        Managers.EventManager.Instance.OnLevelRestart += ResetPlayer;
     }
 
     private void SetPath(List<Platform> platforms,bool isWinCondition)
@@ -32,16 +32,22 @@ public class PlayerController : MonoBehaviour
     {
         if(isSuccess)
         {
-            playerAnimation.Move(false);
-            playerAnimation.Dance(true);
-            Managers.EventManager.Instance.ONOnSwitchToOrbitalCamera();
+            Dance();
+            Managers.EventManager.Instance.ONOnSwitchCameraState(CameraState.Orbital);
         }
         else
         {
-            Managers.EventManager.Instance.ONOnSwitchToFreeCamera();
+            Managers.EventManager.Instance.ONOnSwitchCameraState(CameraState.Free);
         }
     }
 
+    private void Dance()
+    {
+        playerAnimation.Move(false);
+        playerAnimation.Dance(true);
+    }
+
+    //Enable physics on level end, would be way better with ragdoll tbh ^^
     public void EnablePhysics()
     {
         playerPhysics.EnablePhysics();
@@ -52,7 +58,8 @@ public class PlayerController : MonoBehaviour
         playerPhysics.DisablePhysics();
     }
 
-    private void OnLevelRestart(bool isSuccess)
+
+    private void ResetPlayer(bool isSuccess)
     {
         playerPhysics.DisablePhysics();
         playerAnimation.Dance(false);

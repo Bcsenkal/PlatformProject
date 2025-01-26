@@ -28,23 +28,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        EventManager.Instance.OnSendPlatformScaleInfo += SetOffset;
+        EventManager.Instance.OnSendPlatformScaleInfo += SetPlatformSize;
     }
-    
 
     private void Update() 
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            EventManager.Instance.ONOnLevelRestart(false);
-        }
-        if(Input.GetKeyDown(KeyCode.C))
-        {
-            EventManager.Instance.ONOnLevelRestart(true);
-        }
         if(!isMoving) return;
+        Move();
+        CheckStopDistance();
+    }
+
+    private void Move()
+    {
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * moveSpeed);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+    }
+
+    private void CheckStopDistance()
+    {
         if(Vector3.Distance(transform.position, targetPosition) < 0.05f)
         {
             pathIndex++;
@@ -53,11 +54,17 @@ public class PlayerMovement : MonoBehaviour
                 EndReached();
                 return;
             }
-            targetPosition = new Vector3(path[pathIndex].transform.position.x, transform.position.y, path[pathIndex].transform.position.z);
-            targetRotation = Quaternion.LookRotation(targetPosition - transform.position);
+            ChangeDestination();
         }
     }
 
+    private void ChangeDestination()
+    {
+        targetPosition = new Vector3(path[pathIndex].transform.position.x, transform.position.y, path[pathIndex].transform.position.z);
+        targetRotation = Quaternion.LookRotation(targetPosition - transform.position);
+    }
+
+    //set path and start moving along it
     public void StartMoving(List<Platform> platforms, bool isWinCondition)
     {
         isGonnaWin = isWinCondition;
@@ -71,6 +78,7 @@ public class PlayerMovement : MonoBehaviour
         isMoving = true;
     }
 
+    
     private void EndReached()
     {
         isMoving = false;
@@ -88,8 +96,8 @@ public class PlayerMovement : MonoBehaviour
     {
         targetPosition = transform.position + Vector3.forward * platformSize.z;
         targetRotation = transform.rotation;
-        transform.DOMove(targetPosition, 0.5f);
-        yield return new WaitForSeconds(0.5f);
+        transform.DOMove(targetPosition, 0.75f);
+        yield return new WaitForSeconds(0.75f);
         EventManager.Instance.ONOnLevelEnd(false);
         playerController.EnablePhysics();
         yield return new WaitForSeconds(2f);
@@ -107,7 +115,8 @@ public class PlayerMovement : MonoBehaviour
         // path.Clear();
     }
 
-    private void SetOffset(Vector3 scale)
+    // Getting platform size information to place the player properly without using magic numbers on restart
+    private void SetPlatformSize(Vector3 scale)
     {
         platformSize = scale;
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Manual easings library created by my beloved Lead, Resul Alici.
 public static class Easings 
 {
     public static float QuadEaseOut(float t, float b, float c, float d)

@@ -5,14 +5,13 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     private Animator anim;
-    private int runHash = Animator.StringToHash("isRunning");
-    private int danceHash = Animator.StringToHash("isDancing");
+    private readonly int runHash = Animator.StringToHash("isRunning");
+    private readonly int danceHash = Animator.StringToHash("isDancing");
     void Awake()
     {
         anim = GetComponent<Animator>();
     }
-
-    // Update is called once per frame
+    
     public void Move(bool isMoving)
     {
         anim.SetBool(runHash, isMoving);

@@ -30,6 +30,7 @@ public class Platform : MonoBehaviour
         platformMovement.StartMoving(previous, platformScale, spawnedPlatforms);
     }
 
+    //Calculate the placement distance from previously placed platform, rescale it and call for creating falling piece
     public void SplitPlatform(float distance)
     {
         var direction = distance < 0 ? -1 : 1;
@@ -49,16 +50,27 @@ public class Platform : MonoBehaviour
         float fallingPartXPosition = platformEdge + fallingPartSize / 2 * direction;
         transform.localScale = new Vector3(newScaleX, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newXPosition, transform.position.y, transform.position.z);
-        platformHighlight.Highlight(isPerfect); 
-        EventManager.Instance.ONOnPlatformPlacement(isPerfect);
-        EventManager.Instance.ONOnAddPlatformToSpawnedList(this);
-        EventManager.Instance.ONOnCallNextPlatform(transform.localScale.x);
+        HighlightPlatform(isPerfect);
+        CallEventsOnPlacement(isPerfect);
         previousPlatform = null;
         if(isPerfect) return;
         CreateFallingPart(fallingPartXPosition, fallingPartSize);
-
     }
 
+    //Highlight platform on perfect placement
+    private void HighlightPlatform(bool isPerfect)
+    {
+        platformHighlight.Highlight(isPerfect);
+    }
+
+    
+    private void CallEventsOnPlacement(bool isPerfect)
+    {
+        EventManager.Instance.ONOnPlatformPlacement(isPerfect);
+        EventManager.Instance.ONOnAddPlatformToSpawnedList(this);
+        EventManager.Instance.ONOnCallNextPlatform(transform.localScale.x);
+    }
+    
     private void CreateFallingPart(float fallingPartXPosition, float fallingPartSize)
     {
         Managers.EventManager.Instance.ONOnCreateFallingPart(fallingPartXPosition, fallingPartSize,platformColorization.GetColor(),transform);

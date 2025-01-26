@@ -1,7 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using Managers;
+public enum CameraState
+{
+    Orbital,
+    Follow,
+    Free
+}
 
 public class CameraController : MonoBehaviour
 {
@@ -12,18 +17,37 @@ public class CameraController : MonoBehaviour
 
     private void Awake() 
     {
-        orbitalCamera = transform.GetChild(0).GetComponent<CinemachineVirtualCamera>();
-        followCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
-        orbitalCameraControl = orbitalCamera.GetComponent<OrbitalCamera>();
-        player = followCamera.m_Follow;
-        Managers.EventManager.Instance.OnLevelRestart += OnLevelRestart;
+        CacheComponents();
     }
 
     void Start()
     {
-        Managers.EventManager.Instance.OnSwitchToOrbitalCamera += SwitchToOrbitalCamera;
-        Managers.EventManager.Instance.OnSwitchToFollowCamera += SwitchToFollowCamera;
-        Managers.EventManager.Instance.OnSwitchToFreeCamera += SwitchToFreeCamera;
+        EventManager.Instance.OnSwitchCameraState += SwitchCameraState;
+        EventManager.Instance.OnLevelRestart += ResetCameraState;
+    }
+
+    private void CacheComponents()
+    {
+        orbitalCamera = transform.GetChild(0).GetComponent<CinemachineVirtualCamera>();
+        followCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
+        orbitalCameraControl = orbitalCamera.GetComponent<OrbitalCamera>();
+        player = followCamera.m_Follow;
+    }
+    
+    private void SwitchCameraState(CameraState state)
+    {
+        switch (state)
+        {
+            case CameraState.Orbital:
+                SwitchToOrbitalCamera();
+                break;
+            case CameraState.Follow:
+                SwitchToFollowCamera();
+                break;
+            case CameraState.Free:
+                SwitchToFreeCamera();
+                break;
+        }
     }
 
     private void SwitchToOrbitalCamera()
@@ -37,16 +61,18 @@ public class CameraController : MonoBehaviour
         orbitalCamera.Priority = 0;
         followCamera.Priority = 10;
     }
+
+    // Unfollow the camera target while player is falling so the camera won't fall with player
     private void SwitchToFreeCamera()
     {
         followCamera.m_Follow = null;
     }
 
-    private void OnLevelRestart(bool isSuccess)
+    // Assign player again on restart
+    private void ResetCameraState(bool isSuccess)
     {
         followCamera.m_Follow = player;
         SwitchToFollowCamera();
     }
 
-    // Update is called once per frame
 }
