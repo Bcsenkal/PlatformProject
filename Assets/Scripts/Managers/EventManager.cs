@@ -85,9 +85,11 @@ namespace Managers
         public event System.Action<float> OnCallNextPlatform;
         public event System.Action<float> OnChangeNextSpawn;
         public event System.Action<Vector3> OnSendPlatformScaleInfo;
-        public event System.Action<bool> OnPerfectPlacement;
+        public event System.Action<bool> OnPlatformPlacement;
         public event System.Action OnFailedPlacement;
         public event System.Action<Platform> OnAddPlatformToSpawnedList;
+        public event System.Action<float,float,Color,Transform> OnCreateFallingPart; 
+        public event System.Action<FallingPlatformPart> OnAddFallingPartToPool;
 
         public void ONOnSpawnMovingPlatform(float scaleX, float position,int spawnedPlatforms)
         {
@@ -114,9 +116,9 @@ namespace Managers
             OnSendPlatformScaleInfo?.Invoke(platformScale);
         }
 
-        public void ONOnPerfectPlacement(bool isPerfect)
+        public void ONOnPlatformPlacement(bool isPerfect)
         {
-            OnPerfectPlacement?.Invoke(isPerfect);
+            OnPlatformPlacement?.Invoke(isPerfect);
         }
 
         public void ONOnFailedPlacement()
@@ -124,9 +126,19 @@ namespace Managers
             OnFailedPlacement?.Invoke();
         }
 
-        public void ONOnAddPlatformToSpawnedList(Platform platform)
+        public void ONOnAddPlatformToSpawnedList(Platform platform) 
         {
             OnAddPlatformToSpawnedList?.Invoke(platform);
+        }
+
+        public void ONOnCreateFallingPart(float fallingPartXPosition, float fallingPartSize,Color color,Transform source)
+        {
+            OnCreateFallingPart?.Invoke(fallingPartXPosition,fallingPartSize,color,source);
+        }
+
+        public void ONOnAddFallingPartToPool(FallingPlatformPart part)
+        {
+            OnAddFallingPartToPool?.Invoke(part);
         }
 
 
@@ -144,7 +156,17 @@ namespace Managers
             OnCallNextPlatform = null;
             OnChangeNextSpawn = null;
             OnSendPlatformScaleInfo = null;
-            OnPerfectPlacement = null;
+            OnPlatformPlacement = null;
+            OnFailedPlacement = null;
+            OnAddPlatformToSpawnedList = null;
+            OnCreateFallingPart = null;
+            OnAddFallingPartToPool = null;
+            OnPlayerStartMoving = null;
+            OnSetPlayerPath = null;
+            OnSwitchToOrbitalCamera = null;
+            OnSwitchToFollowCamera = null;
+            OnSwitchToFreeCamera = null;
+            
         }
 
 
