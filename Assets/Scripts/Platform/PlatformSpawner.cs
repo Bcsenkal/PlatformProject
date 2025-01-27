@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class PlatformSpawner : MonoBehaviour
 {
+    private const int DEFAULT_PARKOUR_LENGTH = 10;
+    private const int MINIMUM_PARKOUR_LENGTH = 3;
+    private const int MAXIMUM_PARKOUR_LENGTH = 15;
     private Vector3 initialPlatformScale;
     [SerializeField]private int parkourLength;
     private int spawnedPlatformCount = 0;
     private List<Platform> spawnedPlatforms = new List<Platform>();
     private float nextSpawn;
     private float startPoint = 0f;
+
     void Start()
     {
         Managers.EventManager.Instance.OnCallNextPlatform += SpawnPlatform;
@@ -49,10 +53,8 @@ public class PlatformSpawner : MonoBehaviour
     //spawn starting and ending platform
     private void SpawnStaticPlatforms()
     {
-        if(parkourLength == 0)
-        {
-            parkourLength = 10;
-        }
+        if(parkourLength == 0) parkourLength = DEFAULT_PARKOUR_LENGTH;
+        parkourLength = Mathf.Clamp(parkourLength, MINIMUM_PARKOUR_LENGTH, MAXIMUM_PARKOUR_LENGTH);
         Managers.EventManager.Instance.ONOnSpawnStaticPlatforms(startPoint,parkourLength);
     }
 
